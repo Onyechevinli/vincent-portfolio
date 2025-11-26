@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vincent-portfolio
+  namespace: vincent-portfolio
+  labels:
+    app: vincent-portfolio
+    version: v1
+    owner: vincent-umeokoli
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vincent-portfolio
+  template:
+    metadata:
+      labels:
+        app: vincent-portfolio
+        version: v1
+    spec:
+      containers:
+      - name: flask-app
+        image: __ACR_LOGIN_SERVER__/vincent-portfolio:__IMAGE_TAG__
+        ports:
+        - name: http
+          containerPort: 5000
+          protocol: TCP
+        env:
+        - name: FLASK_ENV
+          value: "production"
+        - name: PORT
+          value: "5000"
+        - name: PYTHONPATH
+          value: "/app"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+      securityContext:
+        fsGroup: 1001
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vincent-portfolio-service
+  namespace: vincent-portfolio
+  labels:
+    app: vincent-portfolio
+    service: flask-app
+spec:
+  selector:
+    app: vincent-portfolio
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vincent-portfolio-ingress
+  namespace: vincent-portfolio
+  labels:
+    app: vincent-portfolio
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  rules:
+  - host: vincent-portfolio.__AKS_CLUSTER_NAME__.__LOCATION__.aksapp.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vincent-portfolio-service
+            port:
+              name: http

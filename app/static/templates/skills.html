@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Skills - {{ personal_info.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">Technical Skills</h1>
+        <p class="lead text-muted">Technologies and tools I work with daily</p>
+    </div>
+
+    <div class="row">
+        {% for category, skills_list in skills.items() %}
+        <div class="col-lg-6 mb-5">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon-container bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                            {% if category == 'Cloud Platforms' %}
+                                <i class="bi bi-cloud-fill text-primary fs-4"></i>
+                            {% elif category == 'DevOps Tools' %}
+                                <i class="bi bi-gear-fill text-primary fs-4"></i>
+                            {% elif category == 'Operating Systems' %}
+                                <i class="bi bi-terminal-fill text-primary fs-4"></i>
+                            {% elif category == 'CI/CD Pipelines' %}
+                                <i class="bi bi-arrow-repeat text-primary fs-4"></i>
+                            {% elif category == 'Infrastructure as Code' %}
+                                <i class="bi bi-code-square text-primary fs-4"></i>
+                            {% elif category == 'Monitoring & Logging' %}
+                                <i class="bi bi-graph-up text-primary fs-4"></i>
+                            {% elif category == 'Networking & Security' %}
+                                <i class="bi bi-shield-fill text-primary fs-4"></i>
+                            {% elif category == 'Version Control' %}
+                                <i class="bi bi-git text-primary fs-4"></i>
+                            {% else %}
+                                <i class="bi bi-tools text-primary fs-4"></i>
+                            {% endif %}
+                        </div>
+                        <h3 class="card-title mb-0 text-primary">{{ category }}</h3>
+                    </div>
+
+                    <div class="skills-grid">
+                        {% for skill in skills_list %}
+                        <div class="skill-item mb-3 p-3 bg-light rounded">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="fw-medium">{{ skill }}</span>
+                                {% if skill in ['AWS', 'Azure', 'Docker', 'Kubernetes', 'Jenkins', 'Terraform'] %}
+                                    <span class="badge bg-success">Expert</span>
+                                {% elif skill in ['Git', 'GitHub', 'Linux (Ubuntu)', 'GitHub Actions'] %}
+                                    <span class="badge bg-primary">Advanced</span>
+                                {% else %}
+                                    <span class="badge bg-info">Proficient</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Skill progress bar -->
+                            <div class="progress mt-2" style="height: 4px;">
+                                {% if skill in ['AWS', 'Azure', 'Docker', 'Kubernetes', 'Jenkins', 'Terraform'] %}
+                                    <div class="progress-bar bg-success" style="width: 90%;"></div>
+                                {% elif skill in ['Git', 'GitHub', 'Linux (Ubuntu)', 'GitHub Actions'] %}
+                                    <div class="progress-bar bg-primary" style="width: 80%;"></div>
+                                {% else %}
+                                    <div class="progress-bar bg-info" style="width: 70%;"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Skill Level Legend -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3">Proficiency Levels</h5>
+                    <div class="row justify-content-center">
+                        <div class="col-md-3 mb-2">
+                            <span class="badge bg-success me-2">Expert</span>
+                            <small class="text-muted">Daily use, advanced implementation</small>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <span class="badge bg-primary me-2">Advanced</span>
+                            <small class="text-muted">Regular use, complex projects</small>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <span class="badge bg-info me-2">Proficient</span>
+                            <small class="text-muted">Working knowledge, ongoing learning</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learning Path -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-book me-2"></i>Currently Learning
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Cloud Platforms</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-arrow-right text-primary me-2"></i>Oracle Cloud Infrastructure</li>
+                                <li><i class="bi bi-arrow-right text-primary me-2"></i>Google Cloud Platform</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary">DevOps Tools</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-arrow-right text-primary me-2"></i>Advanced Kubernetes</li>
+                                <li><i class="bi bi-arrow-right text-primary me-2"></i>Monitoring & Observability</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('experience_page') }}" class="btn btn-outline-primary me-3">
+            <i class="bi bi-arrow-left me-2"></i>View Experience
+        </a>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">
+            Back to Home <i class="bi bi-house-door ms-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate progress bars on load
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.transition = 'width 1.5s ease-in-out';
+            bar.style.width = width;
+        }, 200);
+    });
+
+    // Add hover effects to skill items
+    const skillItems = document.querySelectorAll('.skill-item');
+    skillItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.transition = 'transform 0.3s ease';
+            this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+        });
+
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

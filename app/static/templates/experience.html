@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Experience - {{ personal_info.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold text-primary">Professional Experience</h1>
+                <p class="lead text-muted">My journey in cloud engineering and technical support</p>
+            </div>
+
+            <div class="timeline">
+                {% for job in experience %}
+                <div class="timeline-item mb-5">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h3 class="card-title text-primary mb-2">{{ job.title }}</h3>
+                                    <h5 class="text-muted mb-1">{{ job.company }}</h5>
+                                    <p class="text-muted mb-3">
+                                        <i class="bi bi-geo-alt me-1"></i>{{ job.location }}
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <span class="badge bg-primary fs-6 px-3 py-2">{{ job.period }}</span>
+                                </div>
+                            </div>
+
+                            <h6 class="text-dark mb-3">Key Achievements:</h6>
+                            <ul class="list-unstyled">
+                                {% for achievement in job.achievements %}
+                                <li class="mb-3 d-flex align-items-start">
+                                    <i class="bi bi-check-circle-fill text-success me-3 mt-1 flex-shrink-0"></i>
+                                    <span>{{ achievement }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="{{ url_for('home') }}" class="btn btn-outline-primary me-3">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                </a>
+                <a href="{{ url_for('skills_page') }}" class="btn btn-primary">
+                    View Skills <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.timeline-item {
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--bs-primary), var(--bs-primary-rgb));
+    border-radius: 1px;
+}
+
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: -38px;
+    top: 20px;
+    width: 16px;
+    height: 16px;
+    background: var(--bs-primary);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--bs-primary);
+}
+
+.timeline-item:last-child::before {
+    background: linear-gradient(to bottom, var(--bs-primary), transparent);
+}
+
+@media (max-width: 768px) {
+    .timeline-item::before,
+    .timeline-item::after {
+        display: none;
+    }
+}
+</style>
+{% endblock %}

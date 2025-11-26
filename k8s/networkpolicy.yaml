@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: vincent-portfolio-netpol
+  namespace: vincent-portfolio
+  labels:
+    app: vincent-portfolio
+spec:
+  podSelector:
+    matchLabels:
+      app: vincent-portfolio
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: TCP
+      port: 5000
+  egress:
+  - {}  # Allow all egress traffic (for external API calls, DNS, etc.)
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: vincent-portfolio-limits
+  namespace: vincent-portfolio
+spec:
+  limits:
+  - type: Container
+    default:
+      memory: "512Mi"
+      cpu: "500m"
+    defaultRequest:
+      memory: "256Mi"
+      cpu: "200m"
+    max:
+      memory: "1Gi"
+      cpu: "1"
+    min:
+      memory: "128Mi"
+      cpu: "100m"
+  - type: PersistentVolumeClaim
+    max:
+      storage: "10Gi"
